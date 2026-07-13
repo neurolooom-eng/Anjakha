@@ -1,5 +1,7 @@
 export * from './common'
 export * from './patient'
+export * from './schedule'
+export * from './doctor'
 export * from './ipd'
 export * from './clinical'
 export * from './pharmacy'

@@ -11,6 +11,8 @@ export const mockGroups: Group[] = [
     permissions: p(
       'dashboard:view',
       'patients:view',
+      'patients:edit',
+      'doctors:view',
       'ipd:view',
       'clinical:view',
       'clinical:create',
@@ -21,7 +23,7 @@ export const mockGroups: Group[] = [
   {
     id: 'grp_nurse',
     name: 'Nurse',
-    permissions: p('dashboard:view', 'patients:view', 'ipd:view', 'ipd:create', 'clinical:view'),
+    permissions: p('dashboard:view', 'patients:view', 'ipd:view', 'ipd:create', 'clinical:view', 'clinical:create'),
   },
   {
     id: 'grp_pharmacist',
@@ -86,7 +88,7 @@ export const mockGroups: Group[] = [
 
 export const mockUsers: User[] = [
   { id: 'usr_1', name: 'Anjali Sharma', email: 'anjali.sharma@anjakha.in', groupId: 'grp_admin', groupName: 'Administrator', status: 'Active' },
-  { id: 'usr_2', name: 'Dr. Rohit Verma', email: 'rohit.verma@anjakha.in', groupId: 'grp_doctor', groupName: 'Doctor', status: 'Active' },
+  { id: 'usr_2', name: 'Dr. Rohit Verma', email: 'rohit.verma@anjakha.in', groupId: 'grp_doctor', groupName: 'Doctor', status: 'Active', doctorId: 'doc_1' },
   { id: 'usr_3', name: 'Priya Nair', email: 'priya.nair@anjakha.in', groupId: 'grp_nurse', groupName: 'Nurse', status: 'Active' },
   { id: 'usr_4', name: 'Suresh Iyer', email: 'suresh.iyer@anjakha.in', groupId: 'grp_pharmacist', groupName: 'Pharmacist', status: 'Active' },
   { id: 'usr_5', name: 'Meena Joshi', email: 'meena.joshi@anjakha.in', groupId: 'grp_frontdesk', groupName: 'Front Desk', status: 'Active' },

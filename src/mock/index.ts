@@ -1,5 +1,7 @@
 export * from './admin.mock'
 export * from './patient.mock'
+export * from './schedule.mock'
+export * from './doctor.mock'
 export * from './ipd.mock'
 export * from './clinical.mock'
 export * from './pharmacy.mock'

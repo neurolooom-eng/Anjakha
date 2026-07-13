@@ -19,4 +19,6 @@ export interface User {
   groupId: ID
   groupName: string
   status: 'Active' | 'Inactive'
+  /** Links this login to a Doctor Registry record, for doctor self-service views. */
+  doctorId?: ID
 }

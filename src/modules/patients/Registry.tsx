@@ -10,7 +10,7 @@ import { formatDate } from '@/lib/format'
 import { makeId } from '@/lib/id'
 import type { Patient } from '@/types'
 
-const GENDER_OPTIONS = ['Male', 'Female', 'Other'].map((v) => ({ value: v, label: v }))
+export const GENDER_OPTIONS = ['Male', 'Female', 'Other'].map((v) => ({ value: v, label: v }))
 const BLOOD_OPTIONS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((v) => ({ value: v, label: v }))
 const CATEGORY_OPTIONS = ['General', 'Insurance', 'Corporate', 'Government Scheme'].map((v) => ({ value: v, label: v }))
 const STATUS_OPTIONS = ['Active', 'Inactive'].map((v) => ({ value: v, label: v }))

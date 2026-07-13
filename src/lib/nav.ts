@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   BedDouble, BookOpen, LayoutDashboard, Pill, Receipt, Settings, ShieldCheck, Stethoscope,
-  UserCog, Users, Wrench, Landmark,
+  UserCog, Users, Wrench, Landmark, IdCard,
 } from 'lucide-react'
 
 export interface NavItem {
@@ -31,7 +31,10 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: 'Clinical',
-    items: [{ path: '/clinical', label: 'Clinical', icon: Stethoscope, permission: 'clinical:view' }],
+    items: [
+      { path: '/clinical', label: 'Clinical', icon: Stethoscope, permission: 'clinical:view' },
+      { path: '/doctors', label: 'Doctors', icon: IdCard, permission: 'doctors:view' },
+    ],
   },
   {
     label: 'Pharmacy',

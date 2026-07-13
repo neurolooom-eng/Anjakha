@@ -18,7 +18,14 @@ export interface Patient extends AuditFields {
   status: 'Active' | 'Inactive'
 }
 
-export type AppointmentStatus = 'Scheduled' | 'Checked In' | 'In Consultation' | 'Completed' | 'Cancelled' | 'No Show'
+export type AppointmentStatus =
+  | 'Scheduled'
+  | 'Checked In'
+  | 'Vitals Recorded'
+  | 'In Consultation'
+  | 'Completed'
+  | 'Cancelled'
+  | 'No Show'
 
 export interface Appointment extends AuditFields {
   id: ID
@@ -30,5 +37,6 @@ export interface Appointment extends AuditFields {
   time: string
   type: 'New' | 'Follow-up'
   status: AppointmentStatus
+  tokenNo?: number
   notes?: string
 }

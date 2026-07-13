@@ -15,7 +15,9 @@ Every entity also carries the standard audit columns: `createdAt`, `createdBy`, 
 | Tab | Columns (beyond audit fields) |
 |---|---|
 | `Patients` | id, uhid, name, gender, dob, phone, email, address, bloodGroup, category, allergies, emergencyContact, status |
-| `Appointments` | id, patientId, patientName, doctorName, department, date, time, type, status, notes |
+| `Appointments` | id, patientId, patientName, doctorName, department, date, time, type, status, tokenNo, notes |
+| `DoctorSchedules` | id, doctorName, department, daysOfWeek (JSON array), startTime, endTime, slotMinutes, status |
+| `Doctors` | id, name, department, qualification, registrationNo, phone, email, consultationFee, status |
 | `Wards` | id, name, type, floor |
 | `Beds` | id, wardId, wardName, bedNumber, status, dailyRate |
 | `Admissions` | id, patientId, patientName, bedId, bedLabel, admittingDoctor, admissionDate, dischargeDate, diagnosis, status, notes |

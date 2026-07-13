@@ -7,6 +7,8 @@ const LS_KEYS = {
 export const DEFAULT_TABS: Record<string, string> = {
   patients: 'Patients',
   appointments: 'Appointments',
+  doctorSchedules: 'DoctorSchedules',
+  doctors: 'Doctors',
   wards: 'Wards',
   beds: 'Beds',
   admissions: 'Admissions',
