@@ -4,7 +4,13 @@ import path from 'node:path'
 
 const buildId = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12)
 
+// GitHub Pages serves this repo at /Anjakha/, so assets need that base path
+// when built for Pages. Other hosts (Vercel, Netlify, a real server) serve
+// from the domain root, so default to '/' unless GITHUB_PAGES is set.
+const base = process.env.GITHUB_PAGES === 'true' ? '/Anjakha/' : '/'
+
 export default defineConfig({
+  base,
   plugins: [react()],
   resolve: {
     alias: {
