@@ -39,6 +39,7 @@ const STATUS_TONE_MAP: Record<string, Tone> = {
   // appointments
   scheduled: 'info',
   'checked in': 'info',
+  'vitals recorded': 'warning',
   'in consultation': 'primary',
   'no show': 'danger',
   // ipd

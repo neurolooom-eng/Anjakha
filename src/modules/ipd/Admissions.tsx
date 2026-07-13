@@ -4,11 +4,10 @@ import { SchemaForm, type FormSection, type FormValues } from '@/components/form
 import { StatusCell } from '@/components/ui/StatusChip'
 import { ResourceModule } from '@/modules/ResourceModule'
 import { useCollection } from '@/lib/useCollection'
-import { loadAdmissions, loadBeds, loadPatients, saveAdmission, updateAdmission, updateBed, withAudit } from '@/lib/repository'
+import { loadAdmissions, loadBeds, loadDoctors, loadPatients, saveAdmission, updateAdmission, updateBed, withAudit } from '@/lib/repository'
 import { useAuth } from '@/context/AuthContext'
 import { formatDate } from '@/lib/format'
 import { makeId } from '@/lib/id'
-import { DOCTORS } from '@/modules/patients/Appointments'
 import type { Admission, Bed } from '@/types'
 
 const STATUS_OPTIONS = ['Admitted', 'Discharged', 'Transferred', 'Deceased'].map((v) => ({ value: v, label: v }))
@@ -27,12 +26,14 @@ export function AdmissionsTab() {
   const { data: admissions, loading, setData } = useCollection(loadAdmissions)
   const { data: patients } = useCollection(loadPatients)
   const { data: beds, setData: setBeds } = useCollection(loadBeds)
+  const { data: doctors } = useCollection(loadDoctors)
   const { currentUser } = useAuth()
 
   const patientOptions = patients.map((p) => ({ value: p.id, label: `${p.name} (${p.uhid})` }))
   const bedOptions = beds
     .filter((b) => b.status === 'Available')
     .map((b) => ({ value: b.id, label: `${b.bedNumber} · ${b.wardName} (₹${b.dailyRate}/day)` }))
+  const doctorOptions = doctors.filter((d) => d.status === 'Active').map((d) => ({ value: d.name, label: d.name }))
 
   const sections: FormSection[] = [
     {
@@ -40,7 +41,7 @@ export function AdmissionsTab() {
       fields: [
         { key: 'patientId', label: 'Patient', type: 'select', options: patientOptions, required: true },
         { key: 'bedId', label: 'Bed (available)', type: 'select', options: bedOptions, required: true, help: 'Only currently available beds are listed' },
-        { key: 'admittingDoctor', label: 'Admitting doctor', type: 'select', options: DOCTORS.map((d) => ({ value: d, label: d })), required: true },
+        { key: 'admittingDoctor', label: 'Admitting doctor', type: 'select', options: doctorOptions, required: true },
         { key: 'admissionDate', label: 'Admission date', type: 'date', required: true },
         { key: 'dischargeDate', label: 'Discharge date', type: 'date' },
         { key: 'status', label: 'Status', type: 'status', options: STATUS_OPTIONS },

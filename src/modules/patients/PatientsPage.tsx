@@ -3,11 +3,13 @@ import { Tabs } from '@/components/ui/Tabs'
 import { PatientRegistry } from './Registry'
 import { AppointmentsTab } from './Appointments'
 import { OpdQueueTab } from './OpdQueue'
+import { NurseStationTab } from './NurseStation'
 
 const TABS = [
   { key: 'registry', label: 'Registry' },
   { key: 'appointments', label: 'Appointments' },
   { key: 'queue', label: 'OPD Queue' },
+  { key: 'nurse', label: "Nurse's Station" },
 ]
 
 export function PatientsPage() {
@@ -19,6 +21,7 @@ export function PatientsPage() {
       {tab === 'registry' && <PatientRegistry />}
       {tab === 'appointments' && <AppointmentsTab />}
       {tab === 'queue' && <OpdQueueTab />}
+      {tab === 'nurse' && <NurseStationTab />}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { DashboardPage } from '@/modules/dashboard/DashboardPage'
 import { PatientsPage } from '@/modules/patients/PatientsPage'
 import { IpdPage } from '@/modules/ipd/IpdPage'
 import { ClinicalPage } from '@/modules/clinical/ClinicalPage'
+import { DoctorsPage } from '@/modules/doctors/DoctorsPage'
 import { PharmacyPage } from '@/modules/pharmacy/PharmacyPage'
 import { BillingPage } from '@/modules/billing/BillingPage'
 import { AccountsPage } from '@/modules/accounts/AccountsPage'
@@ -23,6 +24,7 @@ export const router = createHashRouter([
       { path: 'patients', element: <RequirePermission permission="patients:view"><PatientsPage /></RequirePermission> },
       { path: 'ipd', element: <RequirePermission permission="ipd:view"><IpdPage /></RequirePermission> },
       { path: 'clinical', element: <RequirePermission permission="clinical:view"><ClinicalPage /></RequirePermission> },
+      { path: 'doctors', element: <RequirePermission permission="doctors:view"><DoctorsPage /></RequirePermission> },
       { path: 'pharmacy', element: <RequirePermission permission="pharmacy:view"><PharmacyPage /></RequirePermission> },
       { path: 'billing', element: <RequirePermission permission="billing:view"><BillingPage /></RequirePermission> },
       { path: 'accounts', element: <RequirePermission permission="accounts:view"><AccountsPage /></RequirePermission> },

@@ -3,22 +3,24 @@ import type { DataTableColumn } from '@/components/table/DataTable'
 import { SchemaForm, type FormSection, type FormValues } from '@/components/form/SchemaForm'
 import { StatusCell } from '@/components/ui/StatusChip'
 import { ResourceModule } from '@/modules/ResourceModule'
+import { AppointmentTimeField } from './AppointmentTimeField'
 import { useCollection } from '@/lib/useCollection'
-import { loadAppointments, loadPatients, saveAppointment, updateAppointment, withAudit } from '@/lib/repository'
+import { loadAppointments, loadDoctors, loadDoctorSchedules, loadPatients, saveAppointment, updateAppointment, withAudit } from '@/lib/repository'
 import { useAuth } from '@/context/AuthContext'
 import { formatDate } from '@/lib/format'
 import { makeId } from '@/lib/id'
+import { nextTokenNo } from '@/lib/scheduling'
 import type { Appointment } from '@/types'
 
-export const DOCTORS = ['Dr. Rohit Verma', 'Dr. Kavya Rao', 'Dr. Sanjay Bhat']
 export const DEPARTMENTS = ['General Medicine', 'Cardiology', 'Orthopaedics', 'Gynaecology', 'ENT', 'Paediatrics', 'Dermatology']
 
 const TYPE_OPTIONS = ['New', 'Follow-up'].map((v) => ({ value: v, label: v }))
-const STATUS_OPTIONS = ['Scheduled', 'Checked In', 'In Consultation', 'Completed', 'Cancelled', 'No Show'].map((v) => ({
+const STATUS_OPTIONS = ['Scheduled', 'Checked In', 'Vitals Recorded', 'In Consultation', 'Completed', 'Cancelled', 'No Show'].map((v) => ({
   value: v, label: v,
 }))
 
 const columns: DataTableColumn<Appointment>[] = [
+  { key: 'tokenNo', header: 'Token', accessor: (r) => r.tokenNo ?? '', width: 70, render: (r) => (r.tokenNo ? `#${r.tokenNo}` : '—') },
   { key: 'date', header: 'Date', accessor: (r) => r.date, width: 110, render: (r) => formatDate(r.date) },
   { key: 'time', header: 'Time', accessor: (r) => r.time, width: 80 },
   { key: 'patientName', header: 'Patient', accessor: (r) => r.patientName, width: 180 },
@@ -31,19 +33,21 @@ const columns: DataTableColumn<Appointment>[] = [
 export function AppointmentsTab() {
   const { data: appointments, loading, setData } = useCollection(loadAppointments)
   const { data: patients } = useCollection(loadPatients)
+  const { data: doctors } = useCollection(loadDoctors)
+  const { data: schedules } = useCollection(loadDoctorSchedules)
   const { currentUser } = useAuth()
 
   const patientOptions = patients.map((p) => ({ value: p.id, label: `${p.name} (${p.uhid})` }))
+  const doctorOptions = doctors.filter((d) => d.status === 'Active').map((d) => ({ value: d.name, label: d.name }))
 
   const sections: FormSection[] = [
     {
       title: 'Visit details',
       fields: [
         { key: 'patientId', label: 'Patient', type: 'select', options: patientOptions, required: true },
-        { key: 'doctorName', label: 'Doctor', type: 'select', options: DOCTORS.map((d) => ({ value: d, label: d })), required: true },
+        { key: 'doctorName', label: 'Doctor', type: 'select', options: doctorOptions, required: true },
         { key: 'department', label: 'Department', type: 'select', options: DEPARTMENTS.map((d) => ({ value: d, label: d })), required: true },
         { key: 'date', label: 'Date', type: 'date', required: true },
-        { key: 'time', label: 'Time', type: 'text', placeholder: '09:30', required: true },
         { key: 'type', label: 'Visit type', type: 'select', options: TYPE_OPTIONS },
         { key: 'status', label: 'Status', type: 'status', options: STATUS_OPTIONS },
       ],
@@ -62,6 +66,7 @@ export function AppointmentsTab() {
       ...editing,
       ...values,
       patientName: patient?.name ?? values.patientName ?? editing?.patientName ?? '',
+      tokenNo: editing?.tokenNo ?? nextTokenNo(values.doctorName, values.date, appointments),
     } as Appointment
     return withAudit(base, currentUser?.name ?? 'system', editing ?? undefined) as Appointment
   }
@@ -80,7 +85,7 @@ export function AppointmentsTab() {
     <ResourceModule<Appointment>
       tableKey="patients-appointments"
       title="Appointments"
-      description="OPD appointment scheduling across departments."
+      description="OPD appointment scheduling across departments. Doctors with a consultation schedule set (see Doctors → Consultation Schedules) get an auto-assigned slot & token; others take a manually entered time."
       icon={CalendarClock}
       columns={columns}
       rows={appointments}
@@ -90,8 +95,21 @@ export function AppointmentsTab() {
       toFormValues={toFormValues}
       buildRecord={(values, editing) => buildRecord({ ...values, id: editing?.id ?? makeId('apt') }, editing)}
       onSave={handleSave}
-      renderForm={(values, setField) => (
-        <SchemaForm sections={sections} values={values} onChange={setField} />
+      renderForm={(values, setField, editing) => (
+        <div className="flex flex-col gap-4">
+          <SchemaForm sections={sections} values={values} onChange={setField} />
+          <div className="card p-4">
+            <AppointmentTimeField
+              doctorName={values.doctorName}
+              date={values.date}
+              time={values.time}
+              onTimeChange={(t) => setField('time', t)}
+              schedules={schedules}
+              appointments={appointments}
+              excludeAppointmentId={editing?.id}
+            />
+          </div>
+        </div>
       )}
     />
   )

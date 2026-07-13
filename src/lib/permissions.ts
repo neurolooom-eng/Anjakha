@@ -7,6 +7,10 @@ export const PERMISSION_CATALOG: Permission[] = [
   { key: 'patients:create', label: 'Create patients & appointments', module: 'Patients' },
   { key: 'patients:edit', label: 'Edit patients & appointments', module: 'Patients' },
 
+  { key: 'doctors:view', label: 'View doctor registry & schedules', module: 'Doctors' },
+  { key: 'doctors:create', label: 'Add doctors & consultation schedules', module: 'Doctors' },
+  { key: 'doctors:edit', label: 'Edit doctors & consultation schedules', module: 'Doctors' },
+
   { key: 'ipd:view', label: 'View admissions & beds', module: 'IPD' },
   { key: 'ipd:create', label: 'Create admissions', module: 'IPD' },
   { key: 'ipd:edit', label: 'Edit admissions & beds', module: 'IPD' },

@@ -4,11 +4,11 @@ import { SchemaForm, type FormSection, type FormValues } from '@/components/form
 import { StatusCell } from '@/components/ui/StatusChip'
 import { ResourceModule } from '@/modules/ResourceModule'
 import { useCollection } from '@/lib/useCollection'
-import { loadConsultations, loadPatients, saveConsultation, updateConsultation, withAudit } from '@/lib/repository'
+import { loadConsultations, loadDoctors, loadPatients, saveConsultation, updateConsultation, withAudit } from '@/lib/repository'
 import { useAuth } from '@/context/AuthContext'
 import { formatDate } from '@/lib/format'
 import { makeId } from '@/lib/id'
-import { DOCTORS, DEPARTMENTS } from '@/modules/patients/Appointments'
+import { DEPARTMENTS } from '@/modules/patients/Appointments'
 import type { Consultation } from '@/types'
 
 const STATUS_OPTIONS = ['Draft', 'Finalized'].map((v) => ({ value: v, label: v }))
@@ -25,16 +25,18 @@ const columns: DataTableColumn<Consultation>[] = [
 export function ConsultationsTab() {
   const { data: consultations, loading, setData } = useCollection(loadConsultations)
   const { data: patients } = useCollection(loadPatients)
+  const { data: doctors } = useCollection(loadDoctors)
   const { currentUser } = useAuth()
 
   const patientOptions = patients.map((p) => ({ value: p.id, label: `${p.name} (${p.uhid})` }))
+  const doctorOptions = doctors.filter((d) => d.status === 'Active').map((d) => ({ value: d.name, label: d.name }))
 
   const sections: FormSection[] = [
     {
       title: 'Visit',
       fields: [
         { key: 'patientId', label: 'Patient', type: 'select', options: patientOptions, required: true },
-        { key: 'doctorName', label: 'Doctor', type: 'select', options: DOCTORS.map((d) => ({ value: d, label: d })), required: true },
+        { key: 'doctorName', label: 'Doctor', type: 'select', options: doctorOptions, required: true },
         { key: 'department', label: 'Department', type: 'select', options: DEPARTMENTS.map((d) => ({ value: d, label: d })), required: true },
         { key: 'date', label: 'Date', type: 'date', required: true },
         { key: 'followUpDate', label: 'Follow-up date', type: 'date' },
