@@ -1,5 +1,6 @@
 import type { Claim, Insurer, Policy } from '@/types'
 import { seedAudit } from './audit'
+import { relativeDate } from './dates'
 
 export const mockInsurers: Insurer[] = [
   { id: 'ins_1', name: 'Star Health Insurance', type: 'Insurer', contactPerson: 'Rajiv Kumar', phone: '+91 44 2828 1234', email: 'claims@starhealth.example', status: 'Active', ...seedAudit(300) },
@@ -18,17 +19,17 @@ export const mockClaims: Claim[] = [
   {
     id: 'clm_1', claimNumber: 'CLM-2026-0771', patientId: 'pat_1', patientName: 'Ramesh Kulkarni',
     policyId: 'pol_1', policyNumber: 'SH-9981234', insurerName: 'Star Health Insurance', invoiceId: 'inv_1',
-    claimAmount: 1475, approvedAmount: 1475, settledAmount: 1475, date: '2026-07-13', status: 'Settled', ...seedAudit(0),
+    claimAmount: 1475, approvedAmount: 1475, settledAmount: 1475, date: relativeDate(0), status: 'Settled', ...seedAudit(0),
   },
   {
     id: 'clm_2', claimNumber: 'CLM-2026-0772', patientId: 'pat_5', patientName: 'Vikram Singh',
     policyId: 'pol_2', policyNumber: 'IL-4472190', insurerName: 'ICICI Lombard', invoiceId: 'inv_2', admissionId: 'adm_3',
-    claimAmount: 25000, approvedAmount: 20000, date: '2026-07-12', status: 'Pre-auth Approved',
+    claimAmount: 25000, approvedAmount: 20000, date: relativeDate(-1), status: 'Pre-auth Approved',
     remarks: 'Cashless approved for ICU stay up to 3 days; balance to be re-evaluated at discharge.', ...seedAudit(1),
   },
   {
     id: 'clm_3', claimNumber: 'CLM-2026-0773', patientId: 'pat_7', patientName: 'Manoj Pillai',
     policyId: 'pol_3', policyNumber: 'SH-2205671', insurerName: 'Star Health Insurance', admissionId: 'adm_2',
-    claimAmount: 48000, date: '2026-07-11', status: 'Claim Submitted', ...seedAudit(2),
+    claimAmount: 48000, date: relativeDate(-2), status: 'Claim Submitted', ...seedAudit(2),
   },
 ]

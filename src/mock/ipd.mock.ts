@@ -1,5 +1,6 @@
 import type { Admission, Bed, Ward } from '@/types'
 import { seedAudit } from './audit'
+import { relativeDate } from './dates'
 
 export const mockWards: Ward[] = [
   { id: 'wrd_1', name: 'General Ward A', type: 'General', floor: '1st Floor', ...seedAudit(90) },
@@ -25,22 +26,22 @@ export const mockBeds: Bed[] = [
 export const mockAdmissions: Admission[] = [
   {
     id: 'adm_1', patientId: 'pat_1', patientName: 'Ramesh Kulkarni', bedId: 'bed_1', bedLabel: 'A-101 · General Ward A',
-    admittingDoctor: 'Dr. Rohit Verma', admissionDate: '2026-07-10', diagnosis: 'Acute coronary syndrome, under observation',
+    admittingDoctor: 'Dr. Rohit Verma', admissionDate: relativeDate(-3), diagnosis: 'Acute coronary syndrome, under observation',
     status: 'Admitted', ...seedAudit(3),
   },
   {
     id: 'adm_2', patientId: 'pat_7', patientName: 'Manoj Pillai', bedId: 'bed_4', bedLabel: 'B-201 · Semi-Private B',
-    admittingDoctor: 'Dr. Sanjay Bhat', admissionDate: '2026-07-11', diagnosis: 'Post-operative recovery — appendectomy',
+    admittingDoctor: 'Dr. Sanjay Bhat', admissionDate: relativeDate(-2), diagnosis: 'Post-operative recovery — appendectomy',
     status: 'Admitted', ...seedAudit(2),
   },
   {
     id: 'adm_3', patientId: 'pat_5', patientName: 'Vikram Singh', bedId: 'bed_8', bedLabel: 'ICU-01 · ICU',
-    admittingDoctor: 'Dr. Rohit Verma', admissionDate: '2026-07-12', diagnosis: 'Severe pneumonia, on ventilator support',
+    admittingDoctor: 'Dr. Rohit Verma', admissionDate: relativeDate(-1), diagnosis: 'Severe pneumonia, on ventilator support',
     status: 'Admitted', ...seedAudit(1),
   },
   {
     id: 'adm_4', patientId: 'pat_4', patientName: 'Fatima Ansari', bedId: 'bed_6', bedLabel: 'P-301 · Private Suites',
-    admittingDoctor: 'Dr. Kavya Rao', admissionDate: '2026-06-28', dischargeDate: '2026-07-02',
+    admittingDoctor: 'Dr. Kavya Rao', admissionDate: relativeDate(-15), dischargeDate: relativeDate(-11),
     diagnosis: 'Elective gall bladder surgery', status: 'Discharged', ...seedAudit(11),
   },
 ]

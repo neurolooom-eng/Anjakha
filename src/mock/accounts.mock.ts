@@ -1,5 +1,6 @@
 import type { Account, JournalEntry } from '@/types'
 import { seedAudit } from './audit'
+import { relativeDate } from './dates'
 
 export const mockAccounts: Account[] = [
   { id: 'acc_1', code: '1001', name: 'Cash in Hand', type: 'Asset', openingBalance: 250000, status: 'Active', ...seedAudit(365) },
@@ -20,7 +21,7 @@ export const mockAccounts: Account[] = [
 
 export const mockJournalEntries: JournalEntry[] = [
   {
-    id: 'je_1', entryNumber: 'JE-2026-0501', date: '2026-07-13', narration: 'OPD invoice INV-2026-3001 — Ramesh Kulkarni',
+    id: 'je_1', entryNumber: 'JE-2026-0501', date: relativeDate(0), narration: 'OPD invoice INV-2026-3001 — Ramesh Kulkarni',
     source: 'Billing', sourceRefId: 'inv_1', status: 'Posted',
     lines: [
       { accountId: 'acc_1', accountName: 'Cash in Hand', debit: 1475, credit: 0 },
@@ -30,7 +31,7 @@ export const mockJournalEntries: JournalEntry[] = [
     ...seedAudit(0),
   },
   {
-    id: 'je_2', entryNumber: 'JE-2026-0502', date: '2026-07-13', narration: 'Pharmacy sale PH-2026-1001 — Fatima Ansari',
+    id: 'je_2', entryNumber: 'JE-2026-0502', date: relativeDate(0), narration: 'Pharmacy sale PH-2026-1001 — Fatima Ansari',
     source: 'Pharmacy Sale', sourceRefId: 'sal_1', status: 'Posted',
     lines: [
       { accountId: 'acc_1', accountName: 'Cash in Hand', debit: 118.16, credit: 0 },
@@ -40,7 +41,7 @@ export const mockJournalEntries: JournalEntry[] = [
     ...seedAudit(0),
   },
   {
-    id: 'je_3', entryNumber: 'JE-2026-0498', date: '2026-07-11', narration: 'GRN-2026-0042 — Sunrise Pharma purchase',
+    id: 'je_3', entryNumber: 'JE-2026-0498', date: relativeDate(-2), narration: 'GRN-2026-0042 — Sunrise Pharma purchase',
     source: 'Pharmacy Purchase', sourceRefId: 'grn_2', status: 'Posted',
     lines: [
       { accountId: 'acc_5', accountName: 'Pharmacy Inventory', debit: 1020, credit: 0 },
@@ -50,7 +51,7 @@ export const mockJournalEntries: JournalEntry[] = [
     ...seedAudit(2),
   },
   {
-    id: 'je_4', entryNumber: 'JE-2026-0490', date: '2026-07-05', narration: 'Staff salary disbursement — June 2026',
+    id: 'je_4', entryNumber: 'JE-2026-0490', date: relativeDate(-8), narration: 'Staff salary disbursement — June 2026',
     source: 'Manual', status: 'Posted',
     lines: [
       { accountId: 'acc_13', accountName: 'Staff Salaries', debit: 480000, credit: 0 },
