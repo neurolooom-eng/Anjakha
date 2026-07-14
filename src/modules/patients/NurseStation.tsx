@@ -3,12 +3,13 @@ import { ClipboardPlus, Stethoscope } from 'lucide-react'
 import { Drawer } from '@/components/ui/Drawer'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { StatusChip } from '@/components/ui/StatusChip'
+import { VitalsFields } from '@/components/clinical/VitalsFields'
 import { useCollection } from '@/lib/useCollection'
 import { loadAppointments, saveConsultation, updateAppointment, withAudit } from '@/lib/repository'
 import { useAuth } from '@/context/AuthContext'
 import { makeId } from '@/lib/id'
 import { todayISO } from '@/lib/format'
-import type { Appointment } from '@/types'
+import type { Appointment, Vitals } from '@/types'
 
 export function NurseStationTab() {
   const { data: appointments, loading, setData: setAppointments } = useCollection(loadAppointments)
@@ -16,9 +17,7 @@ export function NurseStationTab() {
   const canRecord = hasPermission('clinical:create')
 
   const [active, setActive] = useState<Appointment | null>(null)
-  const [weightKg, setWeightKg] = useState('')
-  const [bp, setBp] = useState('')
-  const [tempF, setTempF] = useState('')
+  const [vitals, setVitals] = useState<Vitals>({})
   const [complaints, setComplaints] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -29,9 +28,7 @@ export function NurseStationTab() {
 
   function openFor(appt: Appointment) {
     setActive(appt)
-    setWeightKg('')
-    setBp('')
-    setTempF('')
+    setVitals({})
     setComplaints('')
   }
 
@@ -51,11 +48,7 @@ export function NurseStationTab() {
           doctorName: active.doctorName,
           date: today,
           department: active.department,
-          vitals: {
-            weightKg: weightKg ? Number(weightKg) : undefined,
-            bp: bp || undefined,
-            tempF: tempF ? Number(tempF) : undefined,
-          },
+          vitals,
           complaints,
           diagnosis: '',
           status: 'Draft' as const,
@@ -128,20 +121,9 @@ export function NurseStationTab() {
           </>
         }
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <VitalsFields value={vitals} onChange={setVitals} />
           <div>
-            <label className="label">Weight (kg)</label>
-            <input className="input" type="number" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} />
-          </div>
-          <div>
-            <label className="label">BP (mmHg)</label>
-            <input className="input" placeholder="120/80" value={bp} onChange={(e) => setBp(e.target.value)} />
-          </div>
-          <div>
-            <label className="label">Temp (°F)</label>
-            <input className="input" type="number" value={tempF} onChange={(e) => setTempF(e.target.value)} />
-          </div>
-          <div className="sm:col-span-2">
             <label className="label">Complaint (if any)</label>
             <textarea className="textarea min-h-[80px]" value={complaints} onChange={(e) => setComplaints(e.target.value)} />
           </div>

@@ -3,6 +3,7 @@ import { AlertTriangle, ChevronDown, ChevronRight, FileText } from 'lucide-react
 import { Drawer } from '@/components/ui/Drawer'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { VitalsDisplay } from '@/components/clinical/VitalsDisplay'
 import { useCollection } from '@/lib/useCollection'
 import { loadAdmissions, loadConsultations, loadPatients, loadPrescriptions } from '@/lib/repository'
 import { formatDate } from '@/lib/format'
@@ -35,13 +36,8 @@ function VisitRow({ consultation, prescriptionDrugs }: { consultation: Consultat
       {open && (
         <div className="border-t border-border p-3 text-sm">
           <p className="text-xs text-muted">{consultation.doctorName} · {consultation.department}</p>
-          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <VitalStat label="Temp" value={consultation.vitals.tempF ? `${consultation.vitals.tempF}°F` : undefined} />
-            <VitalStat label="Pulse" value={consultation.vitals.pulse ? `${consultation.vitals.pulse} bpm` : undefined} />
-            <VitalStat label="BP" value={consultation.vitals.bp} />
-            <VitalStat label="SpO2" value={consultation.vitals.spo2 ? `${consultation.vitals.spo2}%` : undefined} />
-            <VitalStat label="Weight" value={consultation.vitals.weightKg ? `${consultation.vitals.weightKg} kg` : undefined} />
-            <VitalStat label="Height" value={consultation.vitals.heightCm ? `${consultation.vitals.heightCm} cm` : undefined} />
+          <div className="mt-2">
+            <VitalsDisplay vitals={consultation.vitals} />
           </div>
           <div className="mt-3 flex flex-col gap-1.5">
             <p><span className="font-medium text-text">Diagnosis:</span> <span className="text-muted">{consultation.diagnosis || '—'}</span></p>
@@ -57,7 +53,7 @@ function VisitRow({ consultation, prescriptionDrugs }: { consultation: Consultat
   )
 }
 
-function VitalStat({ label, value }: { label: string; value?: string }) {
+function InfoStat({ label, value }: { label: string; value?: string }) {
   return (
     <div className="rounded-md bg-surface-2 px-2 py-1.5">
       <p className="text-[10px] uppercase tracking-wide text-muted">{label}</p>
@@ -99,10 +95,10 @@ export function PatientRecordDrawer({
       ) : (
         <div className="flex flex-col gap-4">
           <div className="card grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
-            <VitalStat label="Blood group" value={patient.bloodGroup} />
-            <VitalStat label="Phone" value={patient.phone} />
-            <VitalStat label="Category" value={patient.category} />
-            <VitalStat label="Status" value={patient.status} />
+            <InfoStat label="Blood group" value={patient.bloodGroup} />
+            <InfoStat label="Phone" value={patient.phone} />
+            <InfoStat label="Category" value={patient.category} />
+            <InfoStat label="Status" value={patient.status} />
           </div>
 
           {patient.allergies && (
