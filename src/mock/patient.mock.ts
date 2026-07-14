@@ -1,5 +1,6 @@
 import type { Appointment, Patient } from '@/types'
 import { seedAudit } from './audit'
+import { relativeDate } from './dates'
 
 export const mockPatients: Patient[] = [
   {
@@ -46,12 +47,12 @@ export const mockPatients: Patient[] = [
 ]
 
 export const mockAppointments: Appointment[] = [
-  { id: 'apt_1', patientId: 'pat_1', patientName: 'Ramesh Kulkarni', doctorName: 'Dr. Rohit Verma', department: 'Cardiology', date: '2026-07-13', time: '09:30', type: 'Follow-up', status: 'Checked In', tokenNo: 1, ...seedAudit(1) },
-  { id: 'apt_2', patientId: 'pat_2', patientName: 'Sunita Deshmukh', doctorName: 'Dr. Kavya Rao', department: 'Gynaecology', date: '2026-07-13', time: '10:00', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(1) },
-  { id: 'apt_3', patientId: 'pat_3', patientName: 'Arjun Reddy', doctorName: 'Dr. Rohit Verma', department: 'Orthopaedics', date: '2026-07-13', time: '10:30', type: 'New', status: 'In Consultation', tokenNo: 2, ...seedAudit(1) },
-  { id: 'apt_4', patientId: 'pat_4', patientName: 'Fatima Ansari', doctorName: 'Dr. Sanjay Bhat', department: 'General Medicine', date: '2026-07-13', time: '11:00', type: 'Follow-up', status: 'Completed', tokenNo: 1, ...seedAudit(1) },
-  { id: 'apt_5', patientId: 'pat_5', patientName: 'Vikram Singh', doctorName: 'Dr. Kavya Rao', department: 'Dermatology', date: '2026-07-14', time: '09:00', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(0) },
-  { id: 'apt_6', patientId: 'pat_6', patientName: 'Neha Kapoor', doctorName: 'Dr. Sanjay Bhat', department: 'ENT', date: '2026-07-14', time: '09:45', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(0) },
-  { id: 'apt_7', patientId: 'pat_7', patientName: 'Manoj Pillai', doctorName: 'Dr. Rohit Verma', department: 'Cardiology', date: '2026-07-12', time: '15:00', type: 'Follow-up', status: 'No Show', tokenNo: 1, ...seedAudit(2) },
-  { id: 'apt_8', patientId: 'pat_8', patientName: 'Divya Menon', doctorName: 'Dr. Kavya Rao', department: 'Paediatrics', date: '2026-07-12', time: '16:00', type: 'New', status: 'Cancelled', tokenNo: 1, ...seedAudit(2) },
+  { id: 'apt_1', patientId: 'pat_1', patientName: 'Ramesh Kulkarni', doctorName: 'Dr. Rohit Verma', department: 'Cardiology', date: relativeDate(0), time: '09:30', type: 'Follow-up', status: 'Checked In', tokenNo: 1, ...seedAudit(1) },
+  { id: 'apt_2', patientId: 'pat_2', patientName: 'Sunita Deshmukh', doctorName: 'Dr. Kavya Rao', department: 'Gynaecology', date: relativeDate(0), time: '10:00', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(1) },
+  { id: 'apt_3', patientId: 'pat_3', patientName: 'Arjun Reddy', doctorName: 'Dr. Rohit Verma', department: 'Orthopaedics', date: relativeDate(0), time: '10:30', type: 'New', status: 'In Consultation', tokenNo: 2, ...seedAudit(1) },
+  { id: 'apt_4', patientId: 'pat_4', patientName: 'Fatima Ansari', doctorName: 'Dr. Sanjay Bhat', department: 'General Medicine', date: relativeDate(0), time: '11:00', type: 'Follow-up', status: 'Completed', tokenNo: 1, ...seedAudit(1) },
+  { id: 'apt_5', patientId: 'pat_5', patientName: 'Vikram Singh', doctorName: 'Dr. Kavya Rao', department: 'Dermatology', date: relativeDate(1), time: '09:00', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(0) },
+  { id: 'apt_6', patientId: 'pat_6', patientName: 'Neha Kapoor', doctorName: 'Dr. Sanjay Bhat', department: 'ENT', date: relativeDate(1), time: '09:45', type: 'New', status: 'Scheduled', tokenNo: 1, ...seedAudit(0) },
+  { id: 'apt_7', patientId: 'pat_7', patientName: 'Manoj Pillai', doctorName: 'Dr. Rohit Verma', department: 'Cardiology', date: relativeDate(-1), time: '15:00', type: 'Follow-up', status: 'No Show', tokenNo: 1, ...seedAudit(2) },
+  { id: 'apt_8', patientId: 'pat_8', patientName: 'Divya Menon', doctorName: 'Dr. Kavya Rao', department: 'Paediatrics', date: relativeDate(-1), time: '16:00', type: 'New', status: 'Cancelled', tokenNo: 1, ...seedAudit(2) },
 ]

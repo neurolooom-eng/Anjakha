@@ -1,5 +1,6 @@
 import type { Drug, PharmacyPurchase, PharmacySale, StockBatch } from '@/types'
 import { seedAudit } from './audit'
+import { relativeDate } from './dates'
 
 export const mockDrugs: Drug[] = [
   { id: 'drg_1', name: 'Atorvastatin 20mg', genericName: 'Atorvastatin', hsnCode: '30049099', category: 'Cardiac', unit: 'Tablet', gstRate: 12, reorderLevel: 100, mrp: 8.5, status: 'Active', ...seedAudit(120) },
@@ -26,7 +27,7 @@ export const mockStockBatches: StockBatch[] = [
 export const mockPharmacyPurchases: PharmacyPurchase[] = [
   {
     id: 'grn_1', grnNumber: 'GRN-2026-0041', supplierName: 'MedPlus Distributors', supplierGstin: '27AAECM1234F1Z5',
-    date: '2026-07-08', status: 'Received',
+    date: relativeDate(-5), status: 'Received',
     items: [
       { drugId: 'drg_1', drugName: 'Atorvastatin 20mg', batchNo: 'ATV-2405', expiryDate: '2027-05-31', quantity: 500, rate: 5.2, gstRate: 12 },
       { drugId: 'drg_3', drugName: 'Ibuprofen 400mg', batchNo: 'IBU-2501', expiryDate: '2028-01-31', quantity: 700, rate: 1.6, gstRate: 12 },
@@ -35,7 +36,7 @@ export const mockPharmacyPurchases: PharmacyPurchase[] = [
   },
   {
     id: 'grn_2', grnNumber: 'GRN-2026-0042', supplierName: 'Sunrise Pharma', supplierGstin: '29AACCS5678G1ZQ',
-    date: '2026-07-11', status: 'Received',
+    date: relativeDate(-2), status: 'Received',
     items: [
       { drugId: 'drg_5', drugName: 'Amoxicillin 500mg', batchNo: 'AMX-2409', expiryDate: '2027-03-10', quantity: 300, rate: 3.4, gstRate: 12 },
     ],
@@ -46,7 +47,7 @@ export const mockPharmacyPurchases: PharmacyPurchase[] = [
 export const mockPharmacySales: PharmacySale[] = [
   {
     id: 'sal_1', invoiceNumber: 'PH-2026-1001', prescriptionId: 'rx_3', patientId: 'pat_4', patientName: 'Fatima Ansari',
-    date: '2026-07-13', status: 'Dispensed',
+    date: relativeDate(0), status: 'Dispensed',
     items: [
       { drugId: 'drg_4', drugName: 'Paracetamol 650mg', batchNo: 'PCM-2412', quantity: 12, rate: 1.5, gstRate: 12 },
       { drugId: 'drg_5', drugName: 'Amoxicillin 500mg', batchNo: 'AMX-2409', quantity: 15, rate: 6.0, gstRate: 12 },
