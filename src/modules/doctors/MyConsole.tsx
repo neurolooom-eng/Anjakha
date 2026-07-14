@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, ClipboardList, FileText, ShieldAlert, SkipForward, Stethoscope } from 'lucide-react'
+import { ArrowRight, ClipboardList, FileText, HeartPulse, ShieldAlert, SkipForward, Stethoscope } from 'lucide-react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { Drawer } from '@/components/ui/Drawer'
 import { LineItemsEditor, type LineItemColumn } from '@/components/form/LineItemsEditor'
+import { VitalsFields } from '@/components/clinical/VitalsFields'
 import { PatientRecordDrawer } from './PatientRecordDrawer'
 import { useCollection } from '@/lib/useCollection'
-import { loadAppointments, loadDoctors, loadDrugs, savePrescription, updateAppointment, withAudit } from '@/lib/repository'
+import {
+  loadAppointments, loadConsultations, loadDoctors, loadDrugs, saveConsultation, savePrescription,
+  updateAppointment, updateConsultation, withAudit,
+} from '@/lib/repository'
 import { useAuth } from '@/context/AuthContext'
 import { makeId } from '@/lib/id'
 import { todayISO } from '@/lib/format'
-import type { Appointment, AppointmentStatus, PrescriptionItem } from '@/types'
+import type { Appointment, AppointmentStatus, PrescriptionItem, Vitals } from '@/types'
 
 export function MyConsoleTab() {
   const { currentUser } = useAuth()
   const { data: doctors, loading: loadingDoctors } = useCollection(loadDoctors)
   const { data: appointments, loading: loadingAppts, setData: setAppointments } = useCollection(loadAppointments)
+  const { data: consultations, setData: setConsultations } = useCollection(loadConsultations)
   const { data: drugs } = useCollection(loadDrugs)
   const [currentToken, setCurrentToken] = useState<number | null>(null)
   const [goToInput, setGoToInput] = useState('')
@@ -24,6 +29,10 @@ export function MyConsoleTab() {
   const [rxSaving, setRxSaving] = useState(false)
   const [rxSaved, setRxSaved] = useState(false)
   const [recordOpen, setRecordOpen] = useState(false)
+  const [vitalsOpen, setVitalsOpen] = useState(false)
+  const [vitalsDraft, setVitalsDraft] = useState<Vitals>({})
+  const [vitalsSaving, setVitalsSaving] = useState(false)
+  const [vitalsSaved, setVitalsSaved] = useState(false)
 
   const myDoctor = doctors.find((d) => d.id === currentUser?.doctorId) ?? null
   const today = todayISO()
@@ -109,6 +118,54 @@ export function MyConsoleTab() {
     }
   }
 
+  const todaysConsultation = current
+    ? consultations.find((c) => c.patientId === current.patientId && c.doctorName === myDoctor?.name && c.date === today) ?? null
+    : null
+
+  function openVitals() {
+    setVitalsDraft(todaysConsultation?.vitals ?? {})
+    setVitalsSaved(false)
+    setVitalsOpen(true)
+  }
+
+  async function saveVitals() {
+    if (!current || !myDoctor) return
+    setVitalsSaving(true)
+    try {
+      if (todaysConsultation) {
+        const updated = withAudit(
+          { ...todaysConsultation, vitals: vitalsDraft },
+          currentUser?.name ?? 'system',
+          todaysConsultation,
+        )
+        await updateConsultation(updated)
+        setConsultations((rows) => rows.map((r) => (r.id === updated.id ? updated : r)))
+      } else {
+        const created = withAudit(
+          {
+            id: makeId('con'),
+            patientId: current.patientId,
+            patientName: current.patientName,
+            doctorName: myDoctor.name,
+            date: today,
+            department: current.department,
+            vitals: vitalsDraft,
+            complaints: '',
+            diagnosis: '',
+            status: 'Draft' as const,
+          },
+          currentUser?.name ?? 'system',
+        )
+        await saveConsultation(created)
+        setConsultations((rows) => [created, ...rows])
+      }
+      setVitalsSaved(true)
+      setTimeout(() => setVitalsOpen(false), 700)
+    } finally {
+      setVitalsSaving(false)
+    }
+  }
+
   const drugOptions = drugs.map((d) => ({ value: d.id, label: d.name }))
   const itemColumns: LineItemColumn<PrescriptionItem>[] = [
     {
@@ -163,6 +220,9 @@ export function MyConsoleTab() {
                   {current.status !== 'In Consultation' && current.status !== 'Completed' && (
                     <button className="btn-outline" onClick={handleStart}>Start Consultation</button>
                   )}
+                  <button className="btn-outline" onClick={openVitals}>
+                    <HeartPulse size={14} /> {todaysConsultation?.vitals && Object.keys(todaysConsultation.vitals).length > 0 ? 'Update Vitals' : 'Enter Vitals'}
+                  </button>
                   <button className="btn-outline" onClick={() => setRecordOpen(true)}>
                     <FileText size={14} /> Patient Record
                   </button>
@@ -235,6 +295,24 @@ export function MyConsoleTab() {
           addLabel="Add medicine"
         />
         {rxSaved && <p className="mt-2 text-xs text-success">Saved — visible in Pharmacy&rsquo;s dispensing queue.</p>}
+      </Drawer>
+
+      <Drawer
+        open={vitalsOpen}
+        onClose={() => setVitalsOpen(false)}
+        title={todaysConsultation?.vitals && Object.keys(todaysConsultation.vitals).length > 0 ? 'Update Vitals' : 'Enter Vitals'}
+        subtitle={current ? `${current.patientName} — Token #${current.tokenNo}${todaysConsultation ? '' : ' · not recorded at Nurse’s Station'}` : undefined}
+        footer={
+          <>
+            <button className="btn-outline" onClick={() => setVitalsOpen(false)}>Cancel</button>
+            <button className="btn-primary" disabled={vitalsSaving} onClick={saveVitals}>
+              {vitalsSaving ? 'Saving…' : 'Save Vitals'}
+            </button>
+          </>
+        }
+      >
+        <VitalsFields value={vitalsDraft} onChange={setVitalsDraft} />
+        {vitalsSaved && <p className="mt-2 text-xs text-success">Saved to the consultation note.</p>}
       </Drawer>
 
       <PatientRecordDrawer

@@ -2,6 +2,7 @@ import { Stethoscope } from 'lucide-react'
 import type { DataTableColumn } from '@/components/table/DataTable'
 import { SchemaForm, type FormSection, type FormValues } from '@/components/form/SchemaForm'
 import { StatusCell } from '@/components/ui/StatusChip'
+import { VitalsFields } from '@/components/clinical/VitalsFields'
 import { ResourceModule } from '@/modules/ResourceModule'
 import { useCollection } from '@/lib/useCollection'
 import { loadConsultations, loadDoctors, loadPatients, saveConsultation, updateConsultation, withAudit } from '@/lib/repository'
@@ -9,7 +10,7 @@ import { useAuth } from '@/context/AuthContext'
 import { formatDate } from '@/lib/format'
 import { makeId } from '@/lib/id'
 import { DEPARTMENTS } from '@/modules/patients/Appointments'
-import type { Consultation } from '@/types'
+import type { Consultation, Vitals } from '@/types'
 
 const STATUS_OPTIONS = ['Draft', 'Finalized'].map((v) => ({ value: v, label: v }))
 
@@ -31,7 +32,7 @@ export function ConsultationsTab() {
   const patientOptions = patients.map((p) => ({ value: p.id, label: `${p.name} (${p.uhid})` }))
   const doctorOptions = doctors.filter((d) => d.status === 'Active').map((d) => ({ value: d.name, label: d.name }))
 
-  const sections: FormSection[] = [
+  const visitSections: FormSection[] = [
     {
       title: 'Visit',
       fields: [
@@ -43,17 +44,9 @@ export function ConsultationsTab() {
         { key: 'status', label: 'Status', type: 'status', options: STATUS_OPTIONS },
       ],
     },
-    {
-      title: 'Vitals',
-      fields: [
-        { key: 'vitals_tempF', label: 'Temp (°F)', type: 'number' },
-        { key: 'vitals_pulse', label: 'Pulse (bpm)', type: 'number' },
-        { key: 'vitals_bp', label: 'BP (mmHg)', type: 'text', placeholder: '120/80' },
-        { key: 'vitals_spo2', label: 'SpO2 (%)', type: 'number' },
-        { key: 'vitals_weightKg', label: 'Weight (kg)', type: 'number' },
-        { key: 'vitals_heightCm', label: 'Height (cm)', type: 'number' },
-      ],
-    },
+  ]
+
+  const assessmentSections: FormSection[] = [
     {
       title: 'Assessment',
       fields: [
@@ -65,18 +58,8 @@ export function ConsultationsTab() {
   ]
 
   function toFormValues(record: Consultation | null): FormValues {
-    if (record) {
-      return {
-        ...record,
-        vitals_tempF: record.vitals.tempF,
-        vitals_pulse: record.vitals.pulse,
-        vitals_bp: record.vitals.bp,
-        vitals_spo2: record.vitals.spo2,
-        vitals_weightKg: record.vitals.weightKg,
-        vitals_heightCm: record.vitals.heightCm,
-      }
-    }
-    return { status: 'Draft', date: new Date().toISOString().slice(0, 10) }
+    if (record) return { ...record }
+    return { status: 'Draft', date: new Date().toISOString().slice(0, 10), vitals: {} }
   }
 
   function buildRecord(values: FormValues, editing: Consultation | null): Consultation {
@@ -85,10 +68,7 @@ export function ConsultationsTab() {
       ...editing,
       ...values,
       patientName: patient?.name ?? editing?.patientName ?? '',
-      vitals: {
-        tempF: values.vitals_tempF, pulse: values.vitals_pulse, bp: values.vitals_bp,
-        spo2: values.vitals_spo2, weightKg: values.vitals_weightKg, heightCm: values.vitals_heightCm,
-      },
+      vitals: (values.vitals ?? {}) as Vitals,
     } as Consultation
     return withAudit(base, currentUser?.name ?? 'system', editing ?? undefined) as Consultation
   }
@@ -119,7 +99,13 @@ export function ConsultationsTab() {
       buildRecord={(values, editing) => buildRecord({ ...values, id: editing?.id ?? makeId('con') }, editing)}
       onSave={handleSave}
       renderForm={(values, setField) => (
-        <SchemaForm sections={sections} values={values} onChange={setField} />
+        <div className="flex flex-col gap-4">
+          <SchemaForm sections={visitSections} values={values} onChange={setField} />
+          <div className="card p-4">
+            <VitalsFields value={(values.vitals ?? {}) as Vitals} onChange={(v) => setField('vitals', v)} />
+          </div>
+          <SchemaForm sections={assessmentSections} values={values} onChange={setField} />
+        </div>
       )}
     />
   )
