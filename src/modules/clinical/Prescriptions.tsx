@@ -1,7 +1,7 @@
 import { ClipboardList } from 'lucide-react'
 import type { DataTableColumn } from '@/components/table/DataTable'
 import { SchemaForm, type FormSection, type FormValues } from '@/components/form/SchemaForm'
-import { LineItemsEditor, type LineItemColumn } from '@/components/form/LineItemsEditor'
+import { PrescriptionEditor } from '@/components/clinical/PrescriptionEditor'
 import { StatusCell } from '@/components/ui/StatusChip'
 import { ResourceModule } from '@/modules/ResourceModule'
 import { useCollection } from '@/lib/useCollection'
@@ -32,18 +32,6 @@ export function PrescriptionsTab() {
 
   const patientOptions = patients.map((p) => ({ value: p.id, label: `${p.name} (${p.uhid})` }))
   const consultationOptions = consultations.map((c) => ({ value: c.id, label: `${c.patientName} — ${formatDate(c.date)} (${c.diagnosis})` }))
-  const drugOptions = drugs.map((d) => ({ value: d.id, label: d.name }))
-
-  const itemColumns: LineItemColumn<PrescriptionItem>[] = [
-    {
-      key: 'drugId', label: 'Drug', type: 'select', options: drugOptions, width: '22%',
-      onSelect: (_row, value) => ({ drugName: drugs.find((d) => d.id === value)?.name ?? '' }),
-    },
-    { key: 'dosage', label: 'Dosage', type: 'text', width: '16%' },
-    { key: 'frequency', label: 'Frequency', type: 'text', width: '16%' },
-    { key: 'durationDays', label: 'Days', type: 'number', width: '10%' },
-    { key: 'quantity', label: 'Qty', type: 'number', width: '10%' },
-  ]
 
   const sections: FormSection[] = [
     {
@@ -104,12 +92,10 @@ export function PrescriptionsTab() {
           <SchemaForm sections={sections} values={values} onChange={setField} />
           <div>
             <p className="label">Medicines</p>
-            <LineItemsEditor<PrescriptionItem>
-              columns={itemColumns}
+            <PrescriptionEditor
+              drugs={drugs}
               rows={(values.items ?? []) as PrescriptionItem[]}
               onChange={(rows) => setField('items', rows)}
-              newRow={() => ({ drugId: '', drugName: '', dosage: '', frequency: '', durationDays: 5, quantity: 0 })}
-              addLabel="Add medicine"
             />
           </div>
         </div>

@@ -1,11 +1,25 @@
 import type { AuditFields, ID } from './common'
 
+/** Dosage form — how the medicine is presented. Drives how a doctor prescribes it:
+ * count forms (Tablet/Capsule/Sachet) take a 1-0-1 morning-afternoon-night pattern,
+ * liquid forms (Syrup/Suspension/Drops) additionally take a dose amount + unit (e.g. 5 ml). */
+export type DrugForm =
+  | 'Tablet' | 'Capsule' | 'Syrup' | 'Suspension' | 'Injection'
+  | 'Drops' | 'Ointment' | 'Cream' | 'Inhaler' | 'Sachet' | 'Other'
+
 export interface Drug extends AuditFields {
   id: ID
   name: string
   genericName: string
+  /** Dosage form (Tablet, Syrup, …). */
+  form: DrugForm
+  /** Strength per unit, e.g. "20 mg" or "125 mg/5 ml". */
+  strength: string
+  /** Measure unit for liquid/measured forms, e.g. "ml". Undefined for count forms. */
+  doseUnit?: string
   hsnCode: string
   category: string
+  /** Stock / dispensing pack unit, e.g. Strip, Bottle, Vial, Box. */
   unit: string
   gstRate: number
   reorderLevel: number

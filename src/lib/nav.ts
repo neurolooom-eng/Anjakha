@@ -37,8 +37,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Doctors',
     items: [
-      { path: '/doctors/console', label: 'My Console', icon: Monitor, permission: 'doctors:view' },
-      { path: '/doctors/my-schedule', label: 'My Schedule', icon: CalendarDays, permission: 'doctors:view' },
+      { path: '/doctors/console', label: 'My Console', icon: Monitor, permission: 'doctors:self' },
+      { path: '/doctors/my-schedule', label: 'My Schedule', icon: CalendarDays, permission: 'doctors:self' },
       { path: '/doctors/registry', label: 'Doctor Registry', icon: IdCard, permission: 'doctors:view' },
       { path: '/doctors/schedules', label: 'Consultation Schedules', icon: CalendarCog, permission: 'doctors:view' },
     ],

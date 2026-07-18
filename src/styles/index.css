@@ -30,31 +30,38 @@ html {
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm
-      font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex select-none items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm
+      font-medium transition-all duration-150 outline-none
+      focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-1 focus-visible:ring-offset-surface
+      active:translate-y-px disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
-    @apply btn bg-primary text-primary-fg hover:opacity-90;
+    @apply btn bg-primary text-primary-fg shadow-sm hover:brightness-[1.06] active:brightness-95;
   }
   .btn-ghost {
     @apply btn text-text hover:bg-surface-2;
   }
   .btn-outline {
-    @apply btn border border-border bg-surface text-text hover:bg-surface-2;
+    @apply btn border border-border bg-surface text-text shadow-sm hover:border-primary/40 hover:bg-surface-2;
   }
   .btn-danger {
-    @apply btn bg-danger text-white hover:opacity-90;
+    @apply btn bg-danger text-white shadow-sm hover:brightness-[1.06] active:brightness-95;
   }
 
   .card {
     @apply rounded-xl border border-border bg-surface shadow-card;
   }
+  /* Cards that respond to hover — module tiles, clickable rows, etc. */
+  .card-interactive {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-card-hover;
+  }
 
   .input,
   .select,
   .textarea {
-    @apply w-full rounded-md border border-border bg-surface px-3 py-1.5 text-sm text-text
-      outline-none placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/30;
+    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text
+      outline-none transition-colors placeholder:text-muted
+      focus:border-primary focus:ring-2 focus:ring-primary/25;
   }
   .label {
     @apply mb-1 block text-xs font-medium text-muted;
