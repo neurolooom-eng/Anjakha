@@ -43,7 +43,7 @@ export function VitalsFields({
   return (
     <div>
       <p className="label">Vitals</p>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
         {FIELDS.map((f) => {
           const tone = f.rangeKey ? vitalTone(f.rangeKey, value[f.key]) : 'neutral'
           const flag = tone === 'warning' || tone === 'danger' ? FLAG_LABEL[tone] : undefined

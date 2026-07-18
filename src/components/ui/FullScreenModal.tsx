@@ -33,7 +33,7 @@ export function FullScreenModal({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-surface">
-      <div className="flex items-start justify-between gap-3 border-b border-border p-4">
+      <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
         <div className="min-w-0">
           <h2 className="truncate text-base font-semibold text-text">{title}</h2>
           {subtitle && <p className="mt-0.5 text-xs text-muted">{subtitle}</p>}
@@ -45,8 +45,8 @@ export function FullScreenModal({
           </button>
         </div>
       </div>
-      <div className="mx-auto w-full max-w-6xl flex-1 overflow-auto p-4">{children}</div>
-      {footer && <div className="flex justify-end gap-2 border-t border-border p-4">{footer}</div>}
+      <div className="mx-auto w-full max-w-6xl flex-1 overflow-auto p-3">{children}</div>
+      {footer && <div className="flex justify-end gap-2 border-t border-border px-4 py-3">{footer}</div>}
     </div>
   )
 }
