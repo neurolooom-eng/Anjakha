@@ -1,7 +1,8 @@
 import type { LucideIcon } from 'lucide-react'
 import {
-  BedDouble, BookOpen, LayoutDashboard, Pill, Receipt, Settings, ShieldCheck, Stethoscope,
-  UserCog, Users, Wrench, Landmark, IdCard,
+  BedDouble, BookOpen, CalendarClock, CalendarCog, CalendarDays, HeartPulse, LayoutDashboard,
+  ListOrdered, Monitor, Pill, Receipt, Settings, ShieldCheck, Stethoscope, UserCog, Users, Wrench,
+  Landmark, IdCard,
 } from 'lucide-react'
 
 export interface NavItem {
@@ -26,11 +27,21 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: 'OPD',
-    items: [{ path: '/patients', label: 'Patients', icon: Users, permission: 'patients:view' }],
+    items: [
+      { path: '/patients/registry', label: 'Patient Registry', icon: Users, permission: 'patients:view' },
+      { path: '/patients/appointments', label: 'Appointments', icon: CalendarClock, permission: 'patients:view' },
+      { path: '/patients/queue', label: 'OPD Queue', icon: ListOrdered, permission: 'patients:view' },
+      { path: '/patients/nurse-station', label: "Nurse's Station", icon: HeartPulse, permission: 'patients:view' },
+    ],
   },
   {
     label: 'Doctors',
-    items: [{ path: '/doctors', label: 'Doctors', icon: IdCard, permission: 'doctors:view' }],
+    items: [
+      { path: '/doctors/console', label: 'My Console', icon: Monitor, permission: 'doctors:view' },
+      { path: '/doctors/my-schedule', label: 'My Schedule', icon: CalendarDays, permission: 'doctors:view' },
+      { path: '/doctors/registry', label: 'Doctor Registry', icon: IdCard, permission: 'doctors:view' },
+      { path: '/doctors/schedules', label: 'Consultation Schedules', icon: CalendarCog, permission: 'doctors:view' },
+    ],
   },
   {
     label: 'Admin',
