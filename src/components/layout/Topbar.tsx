@@ -26,14 +26,14 @@ export function Topbar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
   const [userOpen, setUserOpen] = useState(false)
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border bg-surface px-4 md:px-6">
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-surface/80 px-4 backdrop-blur-md md:px-6">
       <div className="flex items-center gap-2 text-sm">
         <button className="btn-ghost !p-1.5 md:hidden" onClick={onOpenMobileNav} aria-label="Open navigation">
           <Menu size={18} />
         </button>
         <span className="text-muted">{group}</span>
-        <span className="mx-1.5 text-muted">/</span>
-        <span className="font-medium text-text">{page}</span>
+        <span className="mx-1.5 text-muted/60">/</span>
+        <span className="font-semibold text-text">{page}</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -44,7 +44,7 @@ export function Topbar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
           {themeOpen && (
             <>
               <button className="fixed inset-0 z-10" aria-label="Close" onClick={() => setThemeOpen(false)} />
-              <div className="absolute right-0 z-20 mt-1 w-52 rounded-lg border border-border bg-surface p-2 shadow-card">
+              <div className="absolute right-0 z-20 mt-1.5 w-52 rounded-xl border border-border bg-surface p-2 shadow-elevated">
                 {THEMES.map((t) => (
                   <button
                     key={t.id}
@@ -69,7 +69,7 @@ export function Topbar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
 
         <div className="relative">
           <button
-            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-surface-2"
+            className="flex items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-sm transition-colors hover:border-border hover:bg-surface-2"
             onClick={() => setUserOpen((s) => !s)}
           >
             <Avatar name={currentUser?.name ?? '?'} size={28} />
@@ -82,7 +82,7 @@ export function Topbar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
           {userOpen && (
             <>
               <button className="fixed inset-0 z-10" aria-label="Close" onClick={() => setUserOpen(false)} />
-              <div className="absolute right-0 z-20 mt-1 w-64 rounded-lg border border-border bg-surface p-2 shadow-card">
+              <div className="absolute right-0 z-20 mt-1.5 w-64 rounded-xl border border-border bg-surface p-2 shadow-elevated">
                 <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted">
                   Switch user (demo)
                 </p>

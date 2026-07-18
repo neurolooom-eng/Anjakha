@@ -8,17 +8,12 @@ export const mockGroups: Group[] = [
   {
     id: 'grp_doctor',
     name: 'Doctor',
-    permissions: p(
-      'dashboard:view',
-      'patients:view',
-      'patients:edit',
-      'doctors:view',
-      'ipd:view',
-      'clinical:view',
-      'clinical:create',
-      'clinical:edit',
-      'pharmacy:view',
-    ),
+    // A doctor's world is their own console & schedule. They deliberately do NOT get the
+    // front-office patient lists (which expose every OPD patient), the doctor registry
+    // (other doctors' personal details), or the cross-patient Clinical module. Their console
+    // reads and writes consultations directly, and a patient's cross-doctor visit history
+    // still surfaces inside that patient's own record when the doctor opens it.
+    permissions: p('dashboard:view', 'doctors:self'),
   },
   {
     id: 'grp_nurse',

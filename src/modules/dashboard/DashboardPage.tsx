@@ -1,22 +1,98 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Activity, AlertTriangle, BedDouble, CheckCircle2, IndianRupee, Receipt, ShieldCheck, Stethoscope, Users,
+  Activity, AlertTriangle, ArrowRight, BedDouble, CheckCircle2, Clock, IndianRupee, Monitor,
+  Receipt, ShieldCheck, Stethoscope, Users,
 } from 'lucide-react'
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, Legend,
 } from 'recharts'
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard'
 import { ChartCard, CHART_PALETTE } from '@/components/ui/ChartCard'
+import { StatusChip, toneForStatus } from '@/components/ui/StatusChip'
 import { useCollection } from '@/lib/useCollection'
 import {
-  loadAdmissions, loadAppointments, loadBeds, loadClaims, loadDrugs, loadInvoices, loadPatients, loadStockBatches,
+  loadAdmissions, loadAppointments, loadBeds, loadClaims, loadDoctors, loadDrugs, loadInvoices,
+  loadPatients, loadStockBatches,
 } from '@/lib/repository'
 import { formatCurrency, todayISO } from '@/lib/format'
 import { NAV_GROUPS } from '@/lib/nav'
 import { useAuth } from '@/context/AuthContext'
 
 export function DashboardPage() {
+  const { currentUser, hasPermission } = useAuth()
+  const { data: doctors } = useCollection(loadDoctors)
+
+  // A logged-in doctor sees only their own day — never the hospital-wide patient roster.
+  const myDoctor = doctors.find((d) => d.id === currentUser?.doctorId) ?? null
+  const isDoctorView = hasPermission('doctors:self') && !hasPermission('patients:view') && myDoctor !== null
+
+  if (isDoctorView && myDoctor) return <DoctorDashboard doctorName={myDoctor.name} />
+  return <AdminDashboard />
+}
+
+function DoctorDashboard({ doctorName }: { doctorName: string }) {
+  const { data: appointments } = useCollection(loadAppointments)
+  const today = todayISO()
+
+  const mine = appointments
+    .filter((a) => a.doctorName === doctorName && a.date === today && a.status !== 'Cancelled' && a.status !== 'No Show')
+    .sort((a, b) => (a.tokenNo ?? 0) - (b.tokenNo ?? 0))
+  const completed = mine.filter((a) => a.status === 'Completed').length
+  const waiting = mine.filter((a) => a.status === 'Scheduled' || a.status === 'Checked In' || a.status === 'Vitals Recorded').length
+  const inConsult = mine.filter((a) => a.status === 'In Consultation').length
+  const upNext = mine.filter((a) => a.status !== 'Completed').slice(0, 6)
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-lg font-semibold text-text">Good day, {doctorName}</h1>
+          <p className="text-sm text-muted">Your OPD day at a glance. Everything here is scoped to your own patients.</p>
+        </div>
+        <Link to="/doctors/console" className="btn-primary">
+          <Monitor size={15} /> Open My Console
+        </Link>
+      </div>
+
+      <KpiGrid>
+        <KpiCard label="Today's patients" value={mine.length} icon={Users} />
+        <KpiCard label="Waiting" value={waiting} icon={Clock} />
+        <KpiCard label="In consultation" value={inConsult} icon={Stethoscope} />
+        <KpiCard label="Completed" value={completed} icon={CheckCircle2} />
+      </KpiGrid>
+
+      <div className="card p-4">
+        <h2 className="mb-3 text-sm font-semibold text-text">Up next</h2>
+        {upNext.length === 0 ? (
+          <p className="text-sm text-muted">No patients waiting — you&rsquo;re all caught up for today.</p>
+        ) : (
+          <div className="flex flex-col divide-y divide-border">
+            {upNext.map((a) => (
+              <Link
+                key={a.id}
+                to="/doctors/console"
+                className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0 hover:opacity-80"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+                  #{a.tokenNo}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-text">{a.patientName}</p>
+                  <p className="text-xs text-muted">{a.time} · {a.department}</p>
+                </div>
+                <StatusChip value={a.status} tone={toneForStatus(a.status)} />
+                <ArrowRight size={15} className="text-muted" />
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function AdminDashboard() {
   const { data: patients } = useCollection(loadPatients)
   const { data: appointments } = useCollection(loadAppointments)
   const { data: beds } = useCollection(loadBeds)
@@ -91,7 +167,7 @@ export function DashboardPage() {
         <h2 className="mb-2 text-sm font-semibold text-text">Modules</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {activeModules.map((item) => (
-            <Link key={item.path} to={item.path} className="card flex items-center gap-3 p-4 transition-colors hover:bg-surface-2">
+            <Link key={item.path} to={item.path} className="card card-interactive flex items-center gap-3 p-4">
               <div className="rounded-lg bg-primary/10 p-2 text-primary">
                 <item.icon size={18} />
               </div>
@@ -101,51 +177,53 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <div className="border-t border-border pt-4">
-        <div className="mb-1 flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-muted">In Progress</h2>
-          <span className="rounded-full bg-muted/15 px-1.5 py-0.5 text-[10px] font-semibold text-muted">Coming soon</span>
-        </div>
-        <p className="mb-3 text-xs text-muted">Preview data from modules outside the current OPD rollout.</p>
+      {inProgressModules.length > 0 && (
+        <div className="border-t border-border pt-4">
+          <div className="mb-1 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-muted">In Progress</h2>
+            <span className="rounded-full bg-muted/15 px-1.5 py-0.5 text-[10px] font-semibold text-muted">Coming soon</span>
+          </div>
+          <p className="mb-3 text-xs text-muted">Preview data from modules outside the current OPD rollout.</p>
 
-        <div className="opacity-70">
-          <KpiGrid>
-            <KpiCard label="Bed occupancy" value={occupancyPct} format="percent" target={85} goal="lower" icon={BedDouble} />
-            <KpiCard label="Today's collections" value={todaysRevenue} format="currency" icon={IndianRupee} />
-            <KpiCard label="Active admissions" value={admissions.filter((a) => a.status === 'Admitted').length} icon={BedDouble} />
-            <KpiCard label="Pending insurance claims" value={pendingClaims} icon={ShieldCheck} target={0} goal="lower" />
-            <KpiCard label="Low stock drugs" value={lowStock} icon={AlertTriangle} target={0} goal="lower" />
-            <KpiCard label="Outstanding invoices" value={invoices.filter((i) => i.status === 'Unpaid' || i.status === 'Partially Paid').length} icon={Receipt} target={0} goal="lower" />
-          </KpiGrid>
+          <div className="opacity-70">
+            <KpiGrid>
+              <KpiCard label="Bed occupancy" value={occupancyPct} format="percent" target={85} goal="lower" icon={BedDouble} />
+              <KpiCard label="Today's collections" value={todaysRevenue} format="currency" icon={IndianRupee} />
+              <KpiCard label="Active admissions" value={admissions.filter((a) => a.status === 'Admitted').length} icon={BedDouble} />
+              <KpiCard label="Pending insurance claims" value={pendingClaims} icon={ShieldCheck} target={0} goal="lower" />
+              <KpiCard label="Low stock drugs" value={lowStock} icon={AlertTriangle} target={0} goal="lower" />
+              <KpiCard label="Outstanding invoices" value={invoices.filter((i) => i.status === 'Unpaid' || i.status === 'Partially Paid').length} icon={Receipt} target={0} goal="lower" />
+            </KpiGrid>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <ChartCard title="Revenue by category">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={revenueByCategory}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--c-border))" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="rgb(var(--c-muted))" angle={-15} textAnchor="end" height={50} />
-                  <YAxis tick={{ fontSize: 11 }} stroke="rgb(var(--c-muted))" />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {revenueByCategory.map((_, i) => <Cell key={i} fill={CHART_PALETTE[i % CHART_PALETTE.length]} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartCard>
+            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <ChartCard title="Revenue by category">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={revenueByCategory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--c-border))" vertical={false} />
+                    <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="rgb(var(--c-muted))" angle={-15} textAnchor="end" height={50} />
+                    <YAxis tick={{ fontSize: 11 }} stroke="rgb(var(--c-muted))" />
+                    <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                      {revenueByCategory.map((_, i) => <Cell key={i} fill={CHART_PALETTE[i % CHART_PALETTE.length]} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
 
-            <div className="grid grid-cols-2 gap-3 self-start sm:grid-cols-3">
-              {inProgressModules.map((item) => (
-                <Link key={item.path} to={item.path} className="card flex items-center gap-3 p-4 transition-colors hover:bg-surface-2">
-                  <div className="rounded-lg bg-muted/15 p-2 text-muted">
-                    <item.icon size={18} />
-                  </div>
-                  <span className="text-sm font-medium text-text">{item.label}</span>
-                </Link>
-              ))}
+              <div className="grid grid-cols-2 gap-3 self-start sm:grid-cols-3">
+                {inProgressModules.map((item) => (
+                  <Link key={item.path} to={item.path} className="card card-interactive flex items-center gap-3 p-4">
+                    <div className="rounded-lg bg-muted/15 p-2 text-muted">
+                      <item.icon size={18} />
+                    </div>
+                    <span className="text-sm font-medium text-text">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

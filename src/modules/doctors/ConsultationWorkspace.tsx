@@ -6,7 +6,8 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { VitalsFields } from '@/components/clinical/VitalsFields'
 import { VitalsDisplay } from '@/components/clinical/VitalsDisplay'
 import { DictationField } from '@/components/clinical/DictationField'
-import { LineItemsEditor, type LineItemColumn } from '@/components/form/LineItemsEditor'
+import { PrescriptionEditor } from '@/components/clinical/PrescriptionEditor'
+import { dosageSummary } from '@/lib/pharmacy'
 import { useCollection } from '@/lib/useCollection'
 import {
   loadAdmissions, loadConsultations, loadDrugs, loadPatients, loadPrescriptions,
@@ -56,7 +57,14 @@ function VisitRow({ consultation, prescriptionDrugs }: { consultation: Consultat
             <p><span className="font-medium text-text">Diagnosis:</span> <span className="text-muted">{consultation.diagnosis || '—'}</span></p>
             {consultation.advice && <p><span className="font-medium text-text">Advice:</span> <span className="text-muted">{consultation.advice}</span></p>}
             {consultation.followUpDate && <p><span className="font-medium text-text">Follow-up:</span> <span className="text-muted">{formatDate(consultation.followUpDate)}</span></p>}
-            {prescriptionDrugs.length > 0 && <p><span className="font-medium text-text">Prescribed:</span> <span className="text-muted">{prescriptionDrugs.join(', ')}</span></p>}
+            {prescriptionDrugs.length > 0 && (
+              <div>
+                <p className="font-medium text-text">Prescribed:</p>
+                <ul className="ml-3 list-disc text-muted">
+                  {prescriptionDrugs.map((d, i) => <li key={i}>{d}</li>)}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -122,18 +130,6 @@ export function ConsultationWorkspace({
         .sort((a, b) => b.date.localeCompare(a.date))
     : []
   const myAdmissions = appointment ? admissions.filter((a) => a.patientId === appointment.patientId) : []
-
-  const drugOptions = drugs.map((d) => ({ value: d.id, label: d.name }))
-  const itemColumns: LineItemColumn<PrescriptionItem>[] = [
-    {
-      key: 'drugId', label: 'Drug', type: 'select', options: drugOptions, width: '26%',
-      onSelect: (_row, value) => ({ drugName: drugs.find((d) => d.id === value)?.name ?? '' }),
-    },
-    { key: 'dosage', label: 'Dosage', type: 'text', width: '18%' },
-    { key: 'frequency', label: 'Frequency', type: 'text', width: '18%' },
-    { key: 'durationDays', label: 'Days', type: 'number', width: '10%' },
-    { key: 'quantity', label: 'Qty', type: 'number', width: '10%' },
-  ]
 
   async function persistConsultation(status: 'Draft' | 'Finalized') {
     const payload = {
@@ -261,13 +257,7 @@ export function ConsultationWorkspace({
               <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text">
                 <ClipboardList size={15} className="text-primary" /> Prescription
               </h3>
-              <LineItemsEditor<PrescriptionItem>
-                columns={itemColumns}
-                rows={rxItems}
-                onChange={setRxItems}
-                newRow={() => ({ drugId: '', drugName: '', dosage: '', frequency: '', durationDays: 5, quantity: 0 })}
-                addLabel="Add medicine"
-              />
+              <PrescriptionEditor drugs={drugs} rows={rxItems} onChange={setRxItems} />
             </div>
             {saved && <p className="text-xs text-success">Saved.</p>}
           </div>
@@ -310,7 +300,7 @@ export function ConsultationWorkspace({
                       consultation={v}
                       prescriptionDrugs={prescriptions
                         .filter((rx) => rx.consultationId === v.id || (rx.patientId === v.patientId && rx.date === v.date))
-                        .flatMap((rx) => rx.items.map((i) => i.drugName))}
+                        .flatMap((rx) => rx.items.map((i) => `${i.drugName} — ${dosageSummary(i)}`))}
                     />
                   ))}
                 </div>

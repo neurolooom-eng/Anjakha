@@ -23,7 +23,12 @@ export default {
         info: v('--c-info'),
       },
       fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-      boxShadow: { card: '0 1px 2px 0 rgb(0 0 0 / .04), 0 1px 3px 0 rgb(0 0 0 / .06)' },
+      boxShadow: {
+        card: '0 1px 2px -1px rgb(15 23 42 / .06), 0 2px 8px -2px rgb(15 23 42 / .08)',
+        'card-hover': '0 4px 10px -3px rgb(15 23 42 / .10), 0 12px 28px -8px rgb(15 23 42 / .16)',
+        elevated: '0 12px 34px -10px rgb(15 23 42 / .22), 0 6px 14px -6px rgb(15 23 42 / .14)',
+      },
+      borderRadius: { xl: '0.875rem', '2xl': '1.125rem' },
     },
   },
   plugins: [],

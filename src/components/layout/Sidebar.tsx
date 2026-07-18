@@ -35,13 +35,13 @@ export function Sidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolean; on
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex items-center gap-2 border-b border-border p-4">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-fg">
-            <HeartPulse size={18} />
+        <div className="flex items-center gap-2.5 border-b border-border p-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-primary-fg shadow-sm">
+            <HeartPulse size={19} />
           </div>
           {(!collapsed || mobileOpen) && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-text">Anjakha HMS</p>
+              <p className="truncate text-sm font-bold tracking-tight text-text">Anjakha HMS</p>
               <p className="truncate text-[11px] text-muted">Hospital Management</p>
             </div>
           )}
@@ -71,18 +71,25 @@ export function Sidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolean; on
                     onClick={onCloseMobile}
                     className={({ isActive }) =>
                       clsx(
-                        'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors',
+                        'group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150',
                         group.inProgress && !isActive
                           ? 'text-muted/70 hover:bg-surface-2 hover:text-muted'
                           : isActive
-                            ? 'bg-primary/12 text-primary'
+                            ? 'bg-gradient-to-r from-primary/15 to-primary/5 font-semibold text-primary shadow-sm'
                             : 'text-text hover:bg-surface-2',
                       )
                     }
                     title={collapsed && !mobileOpen ? item.label : undefined}
                   >
-                    <item.icon size={17} className="shrink-0" />
-                    {(!collapsed || mobileOpen) && <span className="truncate">{item.label}</span>}
+                    {({ isActive }) => (
+                      <>
+                        {isActive && !group.inProgress && (
+                          <span className="absolute inset-y-1.5 left-0 w-1 rounded-r-full bg-primary" />
+                        )}
+                        <item.icon size={17} className="shrink-0" />
+                        {(!collapsed || mobileOpen) && <span className="truncate">{item.label}</span>}
+                      </>
+                    )}
                   </NavLink>
                 ))}
               </div>

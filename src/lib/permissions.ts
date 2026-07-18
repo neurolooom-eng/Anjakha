@@ -7,7 +7,8 @@ export const PERMISSION_CATALOG: Permission[] = [
   { key: 'patients:create', label: 'Create patients & appointments', module: 'Patients' },
   { key: 'patients:edit', label: 'Edit patients & appointments', module: 'Patients' },
 
-  { key: 'doctors:view', label: 'View doctor registry & schedules', module: 'Doctors' },
+  { key: 'doctors:self', label: 'Own console & schedule (a linked doctor)', module: 'Doctors' },
+  { key: 'doctors:view', label: 'View doctor registry & all schedules', module: 'Doctors' },
   { key: 'doctors:create', label: 'Add doctors & consultation schedules', module: 'Doctors' },
   { key: 'doctors:edit', label: 'Edit doctors & consultation schedules', module: 'Doctors' },
 

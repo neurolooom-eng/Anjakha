@@ -40,24 +40,24 @@ export function KpiCard(props: KpiCardProps) {
   const { label, value, format = 'int', target, goal = 'higher', icon: Icon } = props
   const status = rag(props)
   return (
-    <div className="card relative p-4">
+    <div className="card relative overflow-hidden bg-gradient-to-b from-surface to-surface-2/40 p-4">
       <div className="flex items-start justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-muted">{label}</span>
         {Icon && (
-          <div className="rounded-lg bg-primary/10 p-2 text-primary">
+          <div className="rounded-xl bg-primary/10 p-2 text-primary ring-1 ring-inset ring-primary/15">
             <Icon size={16} />
           </div>
         )}
       </div>
-      <div className={`mt-2 text-3xl font-bold tabular-nums ${status ? ragText[status] : 'text-text'}`}>
+      <div className={`mt-2.5 text-[1.75rem] font-bold leading-none tracking-tight tabular-nums ${status ? ragText[status] : 'text-text'}`}>
         {formatValue(value, format)}
       </div>
       {target !== undefined && (
-        <p className="mt-1 text-xs text-muted">
+        <p className="mt-1.5 text-xs text-muted">
           Target {goal === 'lower' ? '≤' : '≥'} {formatValue(target, format)}
         </p>
       )}
-      {status && <div className={`absolute inset-x-0 bottom-0 h-1 rounded-b-xl ${ragBar[status]}`} />}
+      {status && <div className={`absolute inset-x-0 bottom-0 h-1 ${ragBar[status]}`} />}
     </div>
   )
 }
