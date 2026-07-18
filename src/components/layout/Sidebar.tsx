@@ -52,10 +52,15 @@ export function Sidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolean; on
             const items = group.items.filter((item) => !item.permission || hasPermission(item.permission))
             if (items.length === 0) return null
             return (
-              <div key={group.label} className="mb-3">
+              <div key={group.label} className={clsx('mb-3', group.inProgress && 'border-t border-border pt-3')}>
                 {(!collapsed || mobileOpen) && (
-                  <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
+                  <p className="mb-1 flex items-center gap-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
                     {group.label}
+                    {group.inProgress && (
+                      <span className="rounded-full bg-muted/15 px-1.5 py-0.5 text-[9px] font-semibold normal-case tracking-normal text-muted">
+                        Coming soon
+                      </span>
+                    )}
                   </p>
                 )}
                 {items.map((item) => (
@@ -67,7 +72,11 @@ export function Sidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolean; on
                     className={({ isActive }) =>
                       clsx(
                         'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors',
-                        isActive ? 'bg-primary/12 text-primary' : 'text-text hover:bg-surface-2',
+                        group.inProgress && !isActive
+                          ? 'text-muted/70 hover:bg-surface-2 hover:text-muted'
+                          : isActive
+                            ? 'bg-primary/12 text-primary'
+                            : 'text-text hover:bg-surface-2',
                       )
                     }
                     title={collapsed && !mobileOpen ? item.label : undefined}
