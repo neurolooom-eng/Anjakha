@@ -234,24 +234,30 @@ export function ConsultationWorkspace({
       {!appointment || !patient ? (
         <EmptyState icon={FileText} title="No patient selected" />
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="flex flex-col gap-4 lg:col-span-2">
-            <div className="card p-4">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="flex flex-col gap-3 lg:col-span-2">
+            <div className="card p-3">
               <VitalsFields value={vitals} onChange={setVitals} />
             </div>
-            <div className="card flex flex-col gap-3 p-4">
+            <div className="card flex flex-col gap-2.5 p-3">
               <h3 className="flex items-center gap-1.5 text-sm font-semibold text-text">
                 <Stethoscope size={15} className="text-primary" /> Consultation Notes
               </h3>
-              <DictationField label="Chief Complaint" value={complaints} onChange={setComplaints} rows={2} placeholder="Type or dictate the patient's complaint…" />
-              <DictationField label="Diagnosis" value={diagnosis} onChange={setDiagnosis} rows={2} placeholder="Type or dictate the diagnosis…" />
-              <DictationField label="Advice / Notes" value={advice} onChange={setAdvice} rows={2} placeholder="Advice, instructions, referrals…" />
-              <div className="max-w-xs">
-                <label className="label">Follow-up date</label>
-                <input type="date" className="input" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} />
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                <DictationField label="Chief Complaint" value={complaints} onChange={setComplaints} rows={2} placeholder="Type or dictate the patient's complaint…" />
+                <DictationField label="Diagnosis" value={diagnosis} onChange={setDiagnosis} rows={2} placeholder="Type or dictate the diagnosis…" />
+              </div>
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-4">
+                <div className="sm:col-span-3">
+                  <DictationField label="Advice / Notes" value={advice} onChange={setAdvice} rows={2} placeholder="Advice, instructions, referrals…" />
+                </div>
+                <div>
+                  <label className="label">Follow-up date</label>
+                  <input type="date" className="input" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} />
+                </div>
               </div>
             </div>
-            <div className="card p-4">
+            <div className="card p-3">
               <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text">
                 <ClipboardList size={15} className="text-primary" /> Prescription
               </h3>
@@ -266,8 +272,8 @@ export function ConsultationWorkspace({
             {saved && <p className="text-xs text-success">Saved.</p>}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="card grid grid-cols-2 gap-2 p-4">
+          <div className="flex flex-col gap-3 self-start">
+            <div className="card grid grid-cols-2 gap-2 p-3">
               <InfoStat label="Blood group" value={patient.bloodGroup} />
               <InfoStat label="Category" value={patient.category} />
               <InfoStat label="Phone" value={patient.phone} />
