@@ -41,8 +41,8 @@ export function Sidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolean; on
           </div>
           {(!collapsed || mobileOpen) && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold tracking-tight text-text">Anjakha HMS</p>
-              <p className="truncate text-[11px] text-muted">Hospital Management</p>
+              <p className="truncate text-sm font-bold tracking-tight text-text">Anjakha Hospital</p>
+              <p className="truncate text-[11px] text-muted">Est. 2009 · Madipakkam, Chennai</p>
             </div>
           )}
         </div>
