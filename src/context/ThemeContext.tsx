@@ -8,8 +8,10 @@ export interface ThemeDef {
 }
 
 export const THEMES: ThemeDef[] = [
-  { id: 'anjakha-light', label: 'Anjakha Light', swatch: '#0d9488', mode: 'light' },
-  { id: 'anjakha-dark', label: 'Anjakha Dark', swatch: '#2dd4bf', mode: 'dark' },
+  { id: 'anjakha-premium', label: 'Anjakha Premium', swatch: '#0f766e', mode: 'light' },
+  { id: 'anjakha-premium-dark', label: 'Anjakha Premium Dark', swatch: '#34d3be', mode: 'dark' },
+  { id: 'anjakha-light', label: 'Anjakha Classic', swatch: '#0d9488', mode: 'light' },
+  { id: 'anjakha-dark', label: 'Anjakha Classic Dark', swatch: '#2dd4bf', mode: 'dark' },
   { id: 'ocean', label: 'Ocean', swatch: '#0284c7', mode: 'light' },
   { id: 'midnight', label: 'Midnight', swatch: '#818cf8', mode: 'dark' },
   { id: 'emerald', label: 'Emerald', swatch: '#059669', mode: 'light' },
@@ -17,7 +19,7 @@ export const THEMES: ThemeDef[] = [
 ]
 
 const LS_THEME = 'ui.theme'
-const DEFAULT_THEME = 'anjakha-light'
+const DEFAULT_THEME = 'anjakha-premium'
 
 interface ThemeContextValue {
   theme: string

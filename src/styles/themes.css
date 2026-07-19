@@ -1,4 +1,41 @@
+/* Anjakha Premium — the default. A warm, sophisticated clinical palette: deep teal on
+   soft warm paper with a refined gold accent (the teal→gold logo mark). */
 :root,
+[data-theme='anjakha-premium'] {
+  --c-bg: 246 245 242;
+  --c-surface: 255 255 255;
+  --c-surface-2: 240 239 234;
+  --c-border: 228 226 219;
+  --c-text: 24 38 38;
+  --c-muted: 108 118 116;
+  --c-primary: 15 118 110;
+  --c-primary-fg: 255 255 255;
+  --c-accent: 176 132 58;
+  --c-success: 21 128 61;
+  --c-warning: 180 83 9;
+  --c-danger: 190 18 60;
+  --c-info: 14 116 144;
+  color-scheme: light;
+}
+
+[data-theme='anjakha-premium-dark'] {
+  --c-bg: 9 17 16;
+  --c-surface: 16 25 24;
+  --c-surface-2: 26 37 35;
+  --c-border: 40 55 53;
+  --c-text: 232 237 234;
+  --c-muted: 146 161 158;
+  --c-primary: 45 212 191;
+  --c-primary-fg: 4 32 29;
+  --c-accent: 216 178 92;
+  --c-success: 74 222 128;
+  --c-warning: 251 191 36;
+  --c-danger: 251 113 133;
+  --c-info: 56 189 248;
+  color-scheme: dark;
+}
+
+/* Anjakha Classic — the previous default look, kept selectable so it's always one click away. */
 [data-theme='anjakha-light'] {
   --c-bg: 241 245 249;
   --c-surface: 255 255 255;
