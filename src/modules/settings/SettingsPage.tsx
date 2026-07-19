@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Globe, HeartPulse, MapPin, Palette, Phone, RefreshCw, Settings as SettingsIcon, Stethoscope } from 'lucide-react'
+import { BookOpen, Globe, HeartPulse, MapPin, Palette, Phone, RefreshCw, Settings as SettingsIcon, Stethoscope } from 'lucide-react'
 import { loadCompanyProfile } from '@/lib/repository'
+import { AppProcessMap } from './AppProcessMap'
 import type { CompanyProfile } from '@/types'
 
 // Leadership, as published on the hospital's business profile.
@@ -27,7 +28,7 @@ export function SettingsPage() {
   }, [])
 
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
+    <div className="flex max-w-5xl flex-col gap-4">
       <div>
         <h1 className="flex items-center gap-2 text-lg font-semibold text-text">
           <SettingsIcon size={18} className="text-primary" /> Settings
@@ -86,6 +87,17 @@ export function SettingsPage() {
           palette menu <Palette size={13} className="mx-0.5 inline align-text-bottom text-muted" /> in the top bar,
           which also offers light and dark variants.
         </p>
+      </div>
+
+      {/* App Documentation */}
+      <div className="card p-5">
+        <h2 className="mb-1 flex items-center gap-2 text-sm font-semibold text-text">
+          <BookOpen size={16} className="text-primary" /> App Documentation
+        </h2>
+        <p className="mb-4 text-sm text-muted">
+          How work flows through Anjakha HMS — the OPD patient journey from the front desk to the doctor&rsquo;s console.
+        </p>
+        <AppProcessMap />
       </div>
 
       {/* Build */}
